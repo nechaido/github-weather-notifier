@@ -37,6 +37,7 @@ function sendMailTo(message, users) {
         const userData = await request({
           uri: GITHUB_USERS_API + `/${user}`,
           headers: {
+            Accept: 'application/vnd.github.v3+json',
             'User-Agent': config.userAgent,
             Authorization: `token ${config.githubOauthToken}`,
           },
