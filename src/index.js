@@ -9,6 +9,7 @@ const Koa = require('koa');
 const koaJWT = require('koa-jwt');
 const logger = require('koa-logger');
 const bodyParser = require('koa-bodyparser');
+
 const initDB = require('./db');
 const createRouter = require('./api');
 const config = require('./config');
