@@ -1,0 +1,269 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "github-weather-notifier",
+    "version": "1.0.0"
+  },
+  "components": {
+    "parameters": {
+      "user_id": {
+        "name": "user_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "description": "textual description of the error",
+            "type": "string"
+          }
+        }
+      },
+      "Email": {
+        "type": "string",
+        "format": "email"
+      }
+    },
+    "securitySchemes": {
+      "jwt_auth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "jwt_auth": []
+    }
+  ],
+  "paths": {
+    "/signUp": {
+      "post": {
+        "summary": "Perform sign-up",
+        "operationId": "signUp",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "avatar": {
+                  "contentType": "image/*"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User's data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "format": "JWT"
+                    },
+                    "avatar": {
+                      "description": "link to the user's avatar image",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error that has occured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/signIn": {
+      "post": {
+        "summary": "Perform sign-in",
+        "operationId": "signIn",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "$ref": "#/components/schemas/Email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User's data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "format": "JWT"
+                    },
+                    "email": {
+                      "$ref": "#/components/schemas/Email"
+                    },
+                    "avatar": {
+                      "description": "link to the user's avatar image",
+                      "type": "string"
+                    },
+                    "thumbnail": {
+                      "description": "link to the user's thumbnail image",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error that has occured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/avatars/{user_id}": {
+      "get": {
+        "summary": "Get user's avatar image",
+        "operationId": "getAvatar",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/user_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User's avatar image",
+            "content": {
+              "image/*": {}
+            }
+          },
+          "404": {
+            "description": "User with provided id was not found"
+          }
+        }
+      }
+    },
+    "/thumbnails/{user_id}": {
+      "get": {
+        "summary": "Get user's thumbnail avatar image",
+        "operationId": "getAvatarThumbnail",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/user_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User's avatar thumbnail image",
+            "content": {
+              "image/*": {}
+            }
+          },
+          "404": {
+            "description": "User with provided id was not found"
+          }
+        }
+      }
+    },
+    "/sendEmail": {
+      "post": {
+        "summary": "Send email message to GitHub users",
+        "operationId": "sendEmail",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "description": "Message to send as part of the email",
+                    "type": "string"
+                  },
+                  "usernames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "GitHub usernames to send emails to"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully sent the messages"
+          },
+          "default": {
+            "description": "Error that has occured",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
