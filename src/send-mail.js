@@ -77,7 +77,7 @@ async function sendWeatherMail(user, email, message, location) {
       from: config.mail.from,
     },
     // uncomment below to send emails in development/test env:
-    // send: true
+    send: true,
     transport: transporter,
   }).send({
     template: 'message-weather',
