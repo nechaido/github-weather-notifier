@@ -3,8 +3,8 @@
  * @format
  */
 
-import Router from 'koa-router';
+const Router = require('koa-router');
 
 const createRouter = db => new Router();
 
-export default createRouter;
+module.exports = createRouter;

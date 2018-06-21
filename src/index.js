@@ -5,14 +5,13 @@
 
 'use strict';
 
-import Koa from 'koa';
-import koaJWT from 'koa-jwt';
-import logger from 'koa-logger';
-import bodyParser from 'koa-bodyparser';
-
-import initDB from './db';
-import createRouter from './api';
-import config from './config';
+const Koa = require('koa');
+const koaJWT = require('koa-jwt');
+const logger = require('koa-logger');
+const bodyParser = require('koa-bodyparser');
+const initDB = require('./db');
+const createRouter = require('./api');
+const config = require('./config');
 
 const app = new Koa();
 
@@ -21,7 +20,6 @@ initDB()
     const api = createRouter(db);
 
     app.use(logger());
-    app.use(bodyParser());
     app.use(
       koaJWT({ secret: config.jwtSecret }).unless({ path: [/^\/public/] }),
     );
